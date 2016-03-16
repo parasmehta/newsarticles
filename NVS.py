@@ -61,16 +61,24 @@ def search_page_for_crime_link(url):
     for x in dct:
         if x.find_all("a", { "title" : "Crime News" }) != []:
             link = "http://www.novinite.com/"+str(x.find(href=True)['href'])
-            print(link)
-            #store_crime_data_from_page(link)
+            #print(link)
+            store_crime_data_from_page(link)
 
 # this function collectes all crime related data (title, date, content)
 # from a given sub-website (url) form http://www.novinite.com/
 def store_crime_data_from_page(url):
 
     page = getPage(url)
+    content = page.find("div", { "id" : "content" })
+    nvs_title = content.find("h1").text
+    ed = content.find("div", { "class" : "date" }).text
+    eventdate = ed.split("|")
+    eventdate = eventdate[1]
+    #txt = content.find_all("p", { "class" : "western" })
 
-    #nvs_title   = ...
+
+    print(nvs_title + " |" + nvs_date)
+    #   =
     #nvs_date    = ...
     #nvs_content = ...
 
