@@ -8,7 +8,7 @@ Rome:
 - WIR.py: http://www.wantedinrome.com/news_category/crime/
 
 Sofia:
-- NVS.py: http://www.novinite.com/search_news.php?tag=sofia&&s=30. (Search by category 'Crime' and tag 'Sofia')
+- NVS.py: http://www.novinite.com/search_news.php?tag=sofia&&s=30. (Search by tag 'Sofia' and exctracted category 'Crime')
 
 
 The collected infomation will be stored in a .csv-file for each website.
