@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import requests
 import csv
+import os
 
 
 # FUNCTIONS
@@ -17,7 +18,7 @@ def getPage(url):
 # this function stores the headline into a .csv-file
 def initFile():
 
-    fobj = open('sofiArticles.csv', 'w')
+    fobj = open('tmpSofiArticles.csv', 'w')
     csvw = csv.writer(fobj, delimiter='|')
     csvw.writerow(['title', 'time', 'content'])
     fobj.close()
@@ -26,12 +27,23 @@ def initFile():
 # this function stores the collected data into a .csv-file
 def saveEntry(titlestr, timestr, contentstr):
 
-    fobj = open('sofiArticles.csv', 'a')
+    fobj = open('tmpSofiArticles.csv', 'a')
     csvw = csv.writer(fobj, delimiter='|')
     csvw.writerow([titlestr.encode('utf-8'), timestr.encode('utf-8'), contentstr.encode('utf-8')])
     print([titlestr.encode('utf-8'), timestr.encode('utf-8'), contentstr.encode('utf-8')])
     fobj.close()
 
+
+def clean_up_csv_file():
+    input = open('tmpSofiArticles.csv', 'rb')
+    output = open('CrimeRelatedArticlesFromSofia.csv', 'wb')
+    writer = csv.writer(output)
+    for row in csv.reader(input):
+        if row:
+            writer.writerow(row)
+    input.close()
+    output.close()
+    os.remove("tmpSofiArticles.csv")
 
 # this function finds all navigator pages
 def find_all_navigator_pages(url):
@@ -78,7 +90,12 @@ def store_crime_data_from_page(url):
     nvs_date = eventdate[1]
 
     # text
-    nvs_text = content.find("div", { "id" : "textsize" }).text
+    content = content.find("div", { "id" : "textsize" })
+    content = content.find_all("p")
+    nvs_text = ""
+    for t in content:
+        nvs_text = nvs_text + t.text
+    nvs_text = nvs_text.strip()
 
     # store title, date and text into .csv-file
     saveEntry(nvs_title, nvs_date, nvs_text)
@@ -97,7 +114,7 @@ def main():
     # parse the website and store the collected data into file
     find_all_navigator_pages(start_url)
 
-
+    clean_up_csv_file()
 
 ##### CALL MAIN PROGRAM #####
 
