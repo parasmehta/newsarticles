@@ -29,8 +29,8 @@ def saveEntry(titlestr, timestr, contentstr):
 
     fobj = open('tmpSofiArticles.csv', 'a')
     csvw = csv.writer(fobj, delimiter='|')
-    csvw.writerow([titlestr.encode('utf-8'), timestr.encode('utf-8'), contentstr.encode('utf-8')])
-    print([titlestr.encode('utf-8'), timestr.encode('utf-8'), contentstr.encode('utf-8')])
+    csvw.writerow([titlestr, timestr, contentstr])
+    print([titlestr, timestr, contentstr])
     fobj.close()
 
 
@@ -82,20 +82,16 @@ def store_crime_data_from_page(url):
     content = page.find("div", { "id" : "content" })
 
     # title
-    nvs_title = content.find("h1").text
+    nvs_title = content.find("h1").text.encode('utf-8')
 
     # date
     ed = content.find("div", { "class" : "date" }).text
     eventdate = ed.split("|")
-    nvs_date = eventdate[1]
+    nvs_date = eventdate[1].encode('utf-8')
 
     # text
-    content = content.find("div", { "id" : "textsize" })
-    content = content.find_all("p")
-    nvs_text = ""
-    for t in content:
-        nvs_text = nvs_text + t.text
-    nvs_text = nvs_text.strip()
+    content = content.find("div", { "id" : "textsize" }).text
+    nvs_text = str(content.encode('utf-8')).strip().replace("\r","").replace("\n", "")
 
     # store title, date and text into .csv-file
     saveEntry(nvs_title, nvs_date, nvs_text)
@@ -115,6 +111,8 @@ def main():
     find_all_navigator_pages(start_url)
 
     clean_up_csv_file()
+
+    print("\nDONE !\n\n\nAll crime related articles stored in file: CrimeRelatedArticlesFromSofia.csv\n")
 
 ##### CALL MAIN PROGRAM #####
 
