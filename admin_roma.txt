@@ -1,0 +1,3 @@
+-- All admins of "Roma"
+DBQery02: SELECT distinct a.id, a.name, a.admin_level, ST_astext(a.geometry) FROM import.osm_admin a, import.osm_admin b WHERE (ST_contains(a.geometry,b.geometry) OR ST_intersects(a.geometry,b.geometry)) AND a.name = 'Roma' AND b.name != ''
+121;"Roma";8;"MULTIPOLYGON(((1361938.14245926 5122107.57787277,1362015.07401424 5122141.26563319,1362126.65042836 5122156.28386002,1362057.86456744 5122278.56886643,1362498.83306812 5122467.15768978,1363033.90159694 5122651.56090754,1363719.36221831 5122783.99427049,136 (...)"
