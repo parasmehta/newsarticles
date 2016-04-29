@@ -4,12 +4,14 @@
 
 This software collects crime related information (news articles) from the following websites:
 
+London: 
+Possible source - http://www.london24.com/news/crime
+
 Rome:
 - WIR.py: http://www.wantedinrome.com/news_category/crime/
 
 Sofia:
 - NVS.py: http://www.novinite.com/search_news.php?tag=sofia&&s=30. (Search by tag 'Sofia' and exctracted category 'Crime')
-
 
 The collected infomation will be stored in a .csv-file for each website.
 
