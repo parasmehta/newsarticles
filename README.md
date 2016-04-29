@@ -23,9 +23,11 @@ Some simple informations will be extracted from the collected information in the
 
 - type of crime / category
 - location of mentioned crime
-- ...
+- time
 
 Therefore some tools are used:
 
 1. NLTK for text mining: http://www.nltk.org/book/ch07.html
 2. Scikit-learn for machine learning: http://scikit-learn.org/stable/
+3. Gensim package for topic modeling
+4. Clavin for geotagging
