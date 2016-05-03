@@ -129,7 +129,7 @@ def main():
         if (not isGeotagged):
             isGeotagged = geotagging_adminlevels(article)       # find admin level mentioned in article
 
-        if (not isGeotagged):                                      # JUST LOGGING...
+        if (not isGeotagged):                                   # JUST LOGGING...
             print("WARNING: Article: " + getTopic(article) + " could not be geotagged!\n")
 
         #TIME###########################################################################################################
@@ -138,7 +138,7 @@ def main():
         if (not isTimetagged):
             isTimetagged = timetagging(article)                 # find time mentioned in article
 
-        if (not isTimetagged):                                     # JUST LOGGING...
+        if (not isTimetagged):                                  # JUST LOGGING...
             print("WARNING: Article: " + getTopic(article) + " could not be timetagged!\n")
 
     print("\nGEOTAGGING COMPLETED!\n")
