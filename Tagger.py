@@ -15,8 +15,10 @@ def main():
 
     # streets
     f_roads_london = open('roads_roma.txt', 'rb')                                                                       # open file
-    for row in csv.reader(f_roads_london):                                                                              # save content to dictionary
-        tmp = str(row).split(";")                                                                                       # |
+    for tmp in csv.reader(f_roads_london, delimiter=';'):                                                                              # save content to dictionary
+        # tmp = str(row).split(";")                                                                                       # |
+        if len(tmp) < 10:
+            print(tmp)
         list_entry = [tmp[2].replace('"',''), tmp[9].replace('"', '').replace('\'', '').replace(']', '')]               # |
         list_london_roads.append(list_entry)                                                                            # |
     f_roads_london.close()                                                                                              # close file
@@ -34,8 +36,10 @@ def main():
                                                                                                                         # ARTICLES
 
     f_articles_london = open('londonarticles.csv', 'rb')                                                                # open file
-    for row in csv.reader(f_articles_london):                                                                           # save content to dictionary
-        tmp = str(row).split("|")                                                                                       # |
+    for tmp in csv.reader(f_articles_london, delimiter='|'):                                                                           # save content to dictionary
+        #tmp = str(row).split("|")                                                                                       # |
+        if len(tmp) < 3:
+            print(tmp)
         list_entry = [tmp[0].replace('[', '').replace('\'', ''), tmp[1].replace('\'', ''), tmp[2]]                      # |
         list_london_articles.append(list_entry)                                                                         # |
     f_articles_london.close()                                                                                           # close file
@@ -48,7 +52,9 @@ def main():
         for road  in list_london_roads:                                                                                 # |
             for article in list_london_articles:                                                                        # |
                 if (road[0] in article[2]):                                                                             # |
-                    article.append(road[2])                                                                             # | tag article with a position (road)
+                    if len(road) < 3:
+                        print(road)
+                    article.append(road[1])                                                                             # | tag article with a position (road)
                     isGeotagged = True                                                                                  # | mark article as tagged
 
     if (not isGeotagged):                                                                                               # find admin level mentioned in article
@@ -58,8 +64,8 @@ def main():
                     article.append(admlvl[2])                                                                           # | tag article with a position (admin level)
                     isGeotagged = True                                                                                  # | mark article as tagged
 
-    if (not isGeotagged):
-        print("WARNING: Article: " + dict_london_articles[j][1] + " could not be geotagged!\n")
+    # if (not isGeotagged):
+    #     print("WARNING: Article: " + list_london_articles[j][1] + " could not be geotagged!\n")
 
                                                                                                                         # TIMETAGGING
                                                                                                                         # - done by using the second attribute "time" of the extracted articles

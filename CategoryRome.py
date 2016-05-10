@@ -67,6 +67,9 @@ def read_articles(filename):
 
     with open(filename, 'rb') as csvfile:
         filer = csv.reader(csvfile, delimiter='|')
+
+        next(filer, None)  # skip header
+
         for row in filer:
             if len(row) > 0:
 
@@ -78,13 +81,13 @@ def read_articles(filename):
                 print title
                 numarticles += 1
 
-                sent = title + row[2]
+                sent = title + row[2]     # text = title + body
 
                 texts.append(sent)
             else:
                 print "row has 0 columns: " + row
 
-    print numarticles, "articles processed"
+    print numarticles, "articles read"
 
     return texts
 

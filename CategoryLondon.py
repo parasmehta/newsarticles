@@ -8,7 +8,7 @@ from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem.porter import PorterStemmer
-from gensim import corpora, models
+from gensim import corpora, models, utils
 from wordcloud import WordCloud
 
 
@@ -17,25 +17,30 @@ def gettokens(text):
     text = text.lower()
     tokens = []
 
-    tokenizer = RegexpTokenizer(r'\w+')
+#    tokenizer = RegexpTokenizer(r'\w+')
 
     for sent in sent_tokenize(text.decode('utf-8')):
-        for word in word_tokenize(sent):
-            if word == "n't":
-                word = 'not'
-
-                # if €","–" in word:
-                #   continue
-            #            if re.match(r'^\w+$', word):
-            #                tokens.append(word)
-
-            if word in ' :,-.\'':
-                continue
-
-#            if word in ['will', 'also', 'said', 'told', 'man', 'call', '\'s']:
-#                continue
-
+        for word in utils.lemmatize(sent):
             tokens.append(word)
+
+#    print "Lemmatized tokens", tokens
+
+#         for word in word_tokenize(sent):
+#             if word == "n't":
+#                 word = 'not'
+#
+#                 # if €","–" in word:
+#                 #   continue
+#             #            if re.match(r'^\w+$', word):
+#             #                tokens.append(word)
+#
+#             if word in ' :,-.\'':
+#                 continue
+#
+# #            if word in ['will', 'also', 'said', 'told', 'man', 'call', '\'s']:
+# #                continue
+#
+#            tokens.append(word)
 
     # return filter(lambda word: word not in ',-.', tokens)
     return tokens
@@ -48,24 +53,28 @@ def processtokens(doc):
     # create English stop words list
     en_stop = get_stop_words('en')
 
-    for word in ['will', 'also', 'said', 'told', 'man', 'call', '\'s', 'one', 'two', 'last', '0800', 'police', 'polic', 'inform', 'london']:
-        en_stop.append(word)
+    otherstopwords = ['appear', 'time', 'give', 'month', 'ask', 'twitter', 'used', 'include', 'today', 'duggan', 'describe', 'dog', 'see', 'police', 'court', 'pm', 'anonymously', 'year', 'old', 'take', 'find', 'get', 'anyone', 'crimestopper', 'incident', 'person', 'information', 'contact', 'will', 'also', 'say', 'tell', 'told', 'man', 'call', '\'s', 'one', 'two', 'last', '0800', 'polouse', 'inform', 'london', 'be', 'have', 'mr', 'officer', 'go', 'make']
 
-    stopped_tokens = [i for i in tokens if not i in en_stop]
+    stopped_tokens = [i for i in tokens if i[:-3] not in en_stop and i[:-3] not in otherstopwords]
 
     # print stopped_tokens
 
-    # Create p_stemmer of class PorterStemmer
-    p_stemmer = PorterStemmer()
+    return stopped_tokens
 
-    # stem token
-    stemmed_tokens = []
-    for i in stopped_tokens:
-        stemmed_tokens.append(p_stemmer.stem(i))
+
+
+    # Create p_stemmer of class PorterStemmer
+    # p_stemmer = PorterStemmer()
+    #
+    # # stem token
+    # stemmed_tokens = []
+    # for i in stopped_tokens:
+    #     stemmed_tokens.append(p_stemmer.stem(i))
 
 #    print stemmed_tokens
 
-    return stemmed_tokens
+#    return stemmed_tokens
+
 
 # runs LDA on the processed tokens
 def train_model(articletexts):
@@ -85,7 +94,7 @@ def train_model(articletexts):
 
 #    print(corpus[0])
 
-    numtopics = 3
+    numtopics = 4
     ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=numtopics, id2word=dictionary, passes=20)
 
     # print(ldamodel.print_topics(num_topics=6, num_words=4))
@@ -136,7 +145,7 @@ def createwc(ldamodel, numtopics):
         line = line1[1]
         #line = line.strip()[line.rindex(":") + 2:]
         scores = [float(x.split("*")[0]) for x in line.split(" + ")]
-        words = [x.split("*")[1] for x in line.split(" + ")]
+        words = [x.split("*")[1].split('/')[0] for x in line.split(" + ")]
         freqs = []
         for word, score in zip(words, scores):
             freqs.append((word, score))

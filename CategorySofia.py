@@ -67,6 +67,9 @@ def read_articles(filename):
 
     with open(filename, 'rb') as csvfile:
         filer = csv.reader(csvfile, delimiter='|')
+
+        next(filer, None)  # skip header
+
         for row in filer:
             if len(row) > 0:
 
