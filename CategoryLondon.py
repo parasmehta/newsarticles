@@ -53,7 +53,19 @@ def processtokens(doc):
     # create English stop words list
     en_stop = get_stop_words('en')
 
-    otherstopwords = ['appear', 'time', 'give', 'month', 'ask', 'twitter', 'used', 'include', 'today', 'duggan', 'describe', 'dog', 'see', 'police', 'court', 'pm', 'anonymously', 'year', 'old', 'take', 'find', 'get', 'anyone', 'crimestopper', 'incident', 'person', 'information', 'contact', 'will', 'also', 'say', 'tell', 'told', 'man', 'call', '\'s', 'one', 'two', 'last', '0800', 'polouse', 'inform', 'london', 'be', 'have', 'mr', 'officer', 'go', 'make']
+    # otherstopwords = ['appear', 'time', 'give', 'month', 'ask', 'twitter', 'used', 'include', 'today', 'duggan', 'describe', 'dog', 'see', 'police', 'court', 'pm', 'anonymously', 'year', 'old', 'take', 'find', 'get', 'anyone', 'crimestopper', 'incident', 'person', 'information', 'contact', 'will', 'also', 'say', 'tell', 'told', 'man', 'call', '\'s', 'one', 'two', 'last', '0800', 'polouse', 'inform', 'london', 'be', 'have', 'mr', 'officer', 'go', 'make']
+    otherstopwords = ['ms', 'appear', 'time', 'give', 'month', 'ask', 'twitter', 'used', 'include', 'today', 'duggan',
+                      'describe', 'dog', 'see', 'police', 'court', 'pm', 'anonymously', 'year', 'old', 'take', 'find',
+                      'get', 'anyone', 'crimestopper', 'incident', 'person', 'information', 'contact', 'will', 'also',
+                      'say', 'tell', 'told', 'man', 'call', '\'s', 'one', 'two', 'last', '0800', 'polouse', 'inform',
+                      'london', 'be', 'have', 'mr', 'officer', 'go', 'make', 'british', 'image', 'charge', 'custody',
+                      'investigation', 'suspicion', 'magistrate', 'arrest', 'spokesman', 'offence', 'address', 'quote',
+                      'suspect', 'wear', 'know', 'guilty', 'victim', 'appeal', 'probe', 'met', 'jail', 'video', 'trial',
+                      'attempted', 'crime', 'public', 'yard', 'scotland/NN yard', 'scotland', 'metropolitan',
+                      'yesterday', 'follow', 'bailey', 'terry', 'prison', 'judge', 'hear', 'case', 'evidence', 'claim',
+                      'allegation', 'just', 'tia', 'former', 'chelsea', 'face', 'john', 'action', 'justice', 'accuse',
+                      'order', 'life', 'believe', 'inquiry', 'operation', 'alleged', 'now', 'part', 'investigate',
+                      'bring', 'service', 'part', 'week', 'city', 'want', 'think', 'tottenham', 'come', 'new', 'number']
 
     stopped_tokens = [i for i in tokens if i[:-3] not in en_stop and i[:-3] not in otherstopwords]
 
@@ -94,7 +106,7 @@ def train_model(articletexts):
 
 #    print(corpus[0])
 
-    numtopics = 4
+    numtopics = 5
     ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=numtopics, id2word=dictionary, passes=20)
 
     # print(ldamodel.print_topics(num_topics=6, num_words=4))
@@ -165,7 +177,7 @@ def createwc(ldamodel, numtopics):
 
 def main():
     # build LDA Model
-    texts = read_articles("londonarticles_small_train.csv")
+    texts = read_articles("londonarticles.csv")
     ldamodel = train_model(texts)
 
     ldamodel.save('londonmodel')

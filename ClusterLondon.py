@@ -40,9 +40,8 @@ class TopToolbar(mpld3.plugins.PluginBase):
 
       // then change the y position to be
       // at the top of the figure
-      this.fig.toolbar.toolbar.attr("x", 0);
-      this.fig.toolbar.toolbar.attr("y", 600);
-      this.fig.toolbar.toolbar.attr("font-size", 1);
+      this.fig.toolbar.toolbar.attr("x", 150);
+      this.fig.toolbar.toolbar.attr("y", 400);
 
       // then remove the draw function,
       // so that it is not called again
@@ -71,7 +70,11 @@ def gettokens(text):
                       'describe', 'dog', 'see', 'police', 'court', 'pm', 'anonymously', 'year', 'old', 'take', 'find',
                       'get', 'anyone', 'crimestopper', 'incident', 'person', 'information', 'contact', 'will', 'also',
                       'say', 'tell', 'told', 'man', 'call', '\'s', 'one', 'two', 'last', '0800', 'polouse', 'inform',
-                      'london', 'be', 'have', 'mr', 'officer', 'go', 'make', 'british']
+                      'london', 'be', 'have', 'mr', 'officer', 'go', 'make', 'british', 'image', 'charge', 'custody',
+                      'investigation', 'suspicion', 'magistrate', 'arrest', 'spokesman', 'offence', 'address', 'quote',
+                      'suspect', 'wear', 'know', 'guilty', 'victim', 'appeal', 'probe', 'met', 'jail', 'video', 'trial',
+                      'attempted', 'crime', 'public', 'yard', 'scotland/NN yard', 'scotland', 'metropolitan',
+                      'yesterday', 'follow', 'bailey']
 
     stopped_tokens = [i for i in tokens if i[:-3] not in en_stop and i[:-3] not in otherstopwords]
 
@@ -91,24 +94,25 @@ def read_articles(filename):
         next(filer, None) # skip header
 
         for row in filer:
-            if len(row) > 0:
+            if len(row) != 3:
+                print("row has ", len(row), " columns: ", row)
+                sys.exit(-1)
 
-                title = row[0].strip()
+            title = row[0].strip()
 
-                if not title.endswith("."):
-                    title += ". "
+            if not title.endswith("."):
+                title += ". "
 
-                print(title)
+            print(title)
 
-                titles.append(title)
+            titles.append(title)
 
-                numarticles += 1
+            numarticles += 1
 
-                sent = title + row[2]     # text = title + body
+            sent = title + row[2]     # text = title + body
 
-                texts.append(sent.decode("utf-8"))
-            else:
-                print("row has 0 columns: ", row)
+            texts.append(sent.decode("utf-8"))
+
 
     print(numarticles, "articles read")
 
@@ -151,7 +155,7 @@ def clustertopwords(km, num_clusters, frame, terms):
 
 def main():
     # define vectorizer parameters
-    texts, titles = read_articles("londonarticles_500.csv")
+    texts, titles = read_articles("londonarticles.csv")
 
     tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000, min_df=0.1, stop_words='english',
                                        use_idf=True, tokenizer=gettokens, ngram_range=(1, 3))
@@ -206,7 +210,7 @@ def main():
     print()
 
     #set up colors per clusters using a dict
-    cluster_colors = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: '#66a61e'}
+    cluster_colors = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: '#66a61e', 5: '#a9a9a9'}
 
     print("Names", clusternames)
 
@@ -236,7 +240,7 @@ def main():
     # iterate through groups to layer the plot
     # note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
     for name, group in groups:
-        points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=18,
+        points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=8,
                          label=clusternames[name], mec='none',
                          color=cluster_colors[name])
         ax.set_aspect('auto')
@@ -256,7 +260,7 @@ def main():
         ax.axes.get_xaxis().set_visible(False)
         ax.axes.get_yaxis().set_visible(False)
 
-    ax.legend(numpoints=1)  # show legend with only one dot
+    ax.legend(numpoints=1, loc=1, fontsize=7)  # show legend with only one dot
 
     mpld3.display()  # show the plot
 
