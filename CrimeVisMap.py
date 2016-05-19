@@ -35,15 +35,17 @@ importance.sort()
 print (importance[0][0],importance[len(importance)-1][0])
 
 
-map_osm = folium.Map(location=[51.5073, -0.1277])                                                                       # create a map object centered on london
+map_osm = folium.Map(location=[51.5073, -0.1277], tiles='Stamen Toner')                                                                       # create a map object centered on london
 for line in importance:
-    if line[0] <= 100:
-        pl = folium.PolyLine(locations=line[1],weight=10, color='yellow')                                               # 60% red
+    if line[0] <= 50:
+        pl = folium.PolyLine(locations=line[1],weight=10, color='#ffbf00')                                               # 60% red
+    elif line[0] <= 100:
+        pl = folium.PolyLine(locations=line[1], weight=10, color='#ff8000')  # 40% red
     elif line[0] <= 500:
-        pl = folium.PolyLine(locations=line[1], weight=10, color='orange')                                              # 40% red
+        pl = folium.PolyLine(locations=line[1], weight=10, color='#ff4000')                                              # 40% red
     else:
-        pl = folium.PolyLine(locations=line[1], weight=10, color='red')                                                 # 20% red
+        pl = folium.PolyLine(locations=line[1], weight=10, color='#ff0000')                                                 # 20% red
     map_osm.add_children(pl)
-map_osm.save('london_map.html')                                                                                         # create a .html file for the map
+map_osm.save('london_map_bw.html')                                                                                         # create a .html file for the map
 
 print("Map generated. See london_map.html")

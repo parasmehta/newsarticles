@@ -28,7 +28,7 @@ def main():
     f_admin_london = open('london_admin.csv', 'rb')                                                                     # open file
     for row in csv.reader(f_admin_london):                                                                              # save content to list
         tmp = str(row).split(";")                                                                                       # |
-        list_entry = [tmp[0].replace('"',''), tmp[1], tmp[2]]                                                           # |
+        list_entry = [tmp[0].replace('"',''), tmp[1], tmp[2]]                                                           # | tmp[0]=name, tmp[1]=level, tmp[2]=geom
         list_london_adminlevels.append(list_entry)                                                                      # |
     f_admin_london.close()                                                                                              # close file
     print("Filling lists with admin levels = done...\n")
@@ -55,6 +55,7 @@ def main():
 
             if ((road[0] in article[0]) or (road[0] in article[2])):                                                    # check if road name is in title or content of article
                 article.append(road[1])                                                                                 # tag article with a position (road)
+                article.append(road[0])
                 writer.writerow(article)                                                                                # write article to file
                 isTagged[id] = True                                                                                     # set flag
                 num_tagged += 1
@@ -66,8 +67,9 @@ def main():
             article = list_london_articles[id]                                                                          # just a helper
 
             if not isTagged[id]:                                                                                        # if article was not already tagged
-                if ((admlvl[0] in article[0] or admlvl[0] in article[2])):                                              # contains the article an administrative level name?
+                if ((admlvl[0] in article[0]) or (admlvl[0] in article[2])):                                              # contains the article an administrative level name?
                     article.append(admlvl[2])                                                                           # tag article with a position (admin level)
+                    article.append(admlvl[0])
                     writer.writerow(article)                                                                            # write article to file
                     isTagged[id] = True                                                                                 # set flag
                     num_tagged += 1

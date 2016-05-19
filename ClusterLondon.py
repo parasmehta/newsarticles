@@ -118,11 +118,12 @@ def read_articles(filename):
 
     return texts, titles
 
-
+# top n  words that are nearest to the cluster centroid.
 def clustertopwords(km, num_clusters, frame, terms):
     print("Top terms per cluster:")
     print()
     # sort cluster centers by proximity to centroid
+    # Should be: sort cluster center keywords by proximity to centroid
     order_centroids = km.cluster_centers_.argsort()[:, ::-1]
 
     clusternames = {}
