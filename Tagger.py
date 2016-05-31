@@ -1,4 +1,11 @@
 # coding=utf-8
+
+### FAMOUS FIRST WORDS ;-)
+# - no names shorter than 3 letters are considered while tagging the articles
+# - iff a road name is NOT a substring of another road it is used for tagging the articles
+# - a road name is prefered against an administration level name (if a road name was found an administration level name will not be considered)
+# - Let's go! ;-)
+
                                                                                                                         # IMPORTS
 import csv
 
@@ -36,8 +43,8 @@ def main():
                                                                                                                         # ARTICLES
 
     f_articles_london = open('london_articles.csv', 'rb')                                                               # open file
-    for tmp in csv.reader(f_articles_london, delimiter='|'):                                                            # save content to dictionary
-        list_entry = [tmp[0], tmp[1], tmp[2]]                                                                           # |
+    for tmp in csv.reader(f_articles_london, delimiter='|'):                                                            # save content to list
+        list_entry = [tmp[0], tmp[1], tmp[2].replace('\n',' ').replace('\r',' ')]                                       # | tmp[0]=title, tmp[1]=date, tmp[2]=content
         list_london_articles.append(list_entry)                                                                         # |
     f_articles_london.close()                                                                                           # close file
     print("Filling lists with articles = done...\n\n")
@@ -47,18 +54,25 @@ def main():
     output = open('london_articles_tagged.txt', 'wb')
     writer = csv.writer(output)
 
-    isTagged = [False] * len(list_london_articles)
+    isTagged = [False] * len(list_london_articles)                                                                      # create list with so many 'False' entries as we have articles
 
     for road in list_london_roads:
         for id in range(0, len(list_london_articles),1):
             article = list_london_articles[id]
 
-            if ((road[0] in article[0]) or (road[0] in article[2])):                                                    # check if road name is in title or content of article
-                article.append(road[1])                                                                                 # tag article with a position (road)
-                article.append(road[0])
-                writer.writerow(article)                                                                                # write article to file
-                isTagged[id] = True                                                                                     # set flag
-                num_tagged += 1
+            roadAlreadyFound = False
+            if ((road[0] in article[0]) or (road[0] in article[2])) and (len(road[0])>3):                               # check if road name is in title or content of article
+                if (not(len(article)<=3)):
+                    for i in range(3,len(article),1):
+                        if (road[0] in article[i]):
+                            roadAlreadyFound = True
+                if not(roadAlreadyFound):
+                    article.append(road[0])                                                                             # tag article with a name (road)
+                    article.append(road[1])                                                                             # tag article with a position (road)
+                    writer.writerow(article)                                                                            # write article to file
+                    isTagged[id] = True                                                                                 # set flag
+                    num_tagged += 1
+                    print(str(num_tagged)+' tagged article with a street name: "' + str(article[0]) + '"')
 
     print("Roads have been tagged ...\n")
 
@@ -67,12 +81,19 @@ def main():
             article = list_london_articles[id]                                                                          # just a helper
 
             if not isTagged[id]:                                                                                        # if article was not already tagged
-                if ((admlvl[0] in article[0]) or (admlvl[0] in article[2])):                                              # contains the article an administrative level name?
+                adminAlreadyFound = False
+                if ((admlvl[0] in article[0]) or (admlvl[0] in article[2])) and (len(admlvl[0])>3):                     # contains the article an administrative level name?
+                    if not(len(article)<=3):                                                                            #
+                        for j in range(3,len(article),1):
+                            if admlvl[0] in article[j]:
+                                adminAlreadyFound = True
+                if not(adminAlreadyFound):
+                    article.append(admlvl[0])                                                                           # tag article with a name (admin level)
                     article.append(admlvl[2])                                                                           # tag article with a position (admin level)
-                    article.append(admlvl[0])
                     writer.writerow(article)                                                                            # write article to file
                     isTagged[id] = True                                                                                 # set flag
                     num_tagged += 1
+                    print(str(num_tagged)+' tagged article with an administration level name: "' + str(article[0]) + '"')
 
     print("Administration levels have been tagged ...\n")
 
