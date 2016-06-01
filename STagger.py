@@ -77,13 +77,13 @@ def main():
                         for j in range(3, len(article), 1):
                             if admlvl[0] in article[j]:
                                 adminAlreadyFound = True
-                if not (adminAlreadyFound):
-                    article.append(admlvl[0])                                                                           # tag article with a name (admin level)
-                    #article.append(admlvl[2])                                                                          # tag article with a position (admin level)
-                    writer.writerow(article)                                                                            # write article to file
-                    isTagged[id] = True                                                                                 # set flag
-                    num_tagged += 1
-                    print(str(num_tagged) + ' tagged article with an administration level name: "' + str(article[0]) + '"')
+                    if not (adminAlreadyFound):
+                        article.append(admlvl[0])                                                                           # tag article with a name (admin level)
+                        #article.append(admlvl[2])                                                                          # tag article with a position (admin level)
+                        writer.writerow(article)                                                                            # write article to file
+                        isTagged[id] = True                                                                                 # set flag
+                        num_tagged += 1
+                        print(str(num_tagged) + ' tagged article with an administration level name: "' + str(article[0]) + '"')
 
     print("Administration levels have been tagged ...\n")
 
